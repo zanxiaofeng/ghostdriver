@@ -56,6 +56,7 @@ ghostdriver.Session = function(desiredCapabilities) {
         "platform" : ghostdriver.system.os.name + '-' + ghostdriver.system.os.version + '-' + ghostdriver.system.os.architecture,
         "javascriptEnabled" : true,
         "takesScreenshot" : true,
+        "acceptConform" : true,
         "handlesAlerts" : false,            //< TODO
         "databaseEnabled" : false,          //< TODO
         "locationContextEnabled" : false,   //< TODO Target is 1.1
@@ -81,6 +82,9 @@ ghostdriver.Session = function(desiredCapabilities) {
         "takesScreenshot"           : typeof(desiredCapabilities.takesScreenshot) === "undefined" ?
             _defaultCapabilities.takesScreenshot :
             desiredCapabilities.takesScreenshot,
+        "acceptConform" : typeof(desiredCapabilities.acceptConform) === "undefined" ?
+            _defaultCapabilities.acceptConform :
+            desiredCapabilities.acceptConform,
         "handlesAlerts"             : _defaultCapabilities.handlesAlerts,
         "databaseEnabled"           : _defaultCapabilities.databaseEnabled,
         "locationContextEnabled"    : _defaultCapabilities.locationContextEnabled,
@@ -473,6 +477,11 @@ ghostdriver.Session = function(desiredCapabilities) {
             if (main && willNavigate) {
                 _clearPageLog(page);
             }
+        };
+
+        page.onConfirm = function(msg) {
+          _log.debug('CONFIRM: ' + msg);
+          return _negotiatedCapabilities.acceptConform;
         };
 
         _log.info("page.settings", JSON.stringify(page.settings));
